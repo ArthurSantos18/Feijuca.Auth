@@ -6,13 +6,21 @@ using Feijuca.Auth.Providers;
 using Flurl;
 using Mattioli.Configurations.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System.Text;
+using User = Feijuca.Auth.Domain.Entities.User;
 
 namespace Feijuca.Auth.Infra.Data.Repositories
 {
     public class GroupRepository(IHttpClientFactory httpClientFactory, IAuthRepository _authRepository, ITenantProvider _tenantService) 
         : BaseRepository(httpClientFactory), IGroupRepository
     {
+        private static readonly JsonSerializerSettings Settings = new()
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore
+        };
+
         public async Task<Result<IEnumerable<Group>>> GetAllAsync(string tenant, CancellationToken cancellationToken)
         {
             var tokenDetailsResult = await _authRepository.GetAccessTokenAsync(cancellationToken);
@@ -114,6 +122,32 @@ namespace Feijuca.Auth.Infra.Data.Repositories
             return Result<string>.Success(groupId);
         }
 
+        public async Task<Result> UpdateAsync(Group group, string tenant, CancellationToken cancellationToken)
+        {
+            var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
+
+            using var httpClient = CreateHttpClientWithHeaders(tokenDetails.Data.Access_Token);
+
+            var url = httpClient.BaseAddress
+                .AppendPathSegment("admin")
+                .AppendPathSegment("realms")
+                .AppendPathSegment(tenant)
+                .AppendPathSegment("groups")
+                .AppendPathSegment(group.Id);
+
+            var jsonContent = JsonConvert.SerializeObject(group, Settings);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            using var response = await httpClient.PutAsync(url, content, cancellationToken);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return Result<bool>.Success(true);
+            }
+
+            var responseMessage = await response.Content.ReadAsStringAsync(cancellationToken);
+            GroupErrors.SetTechnicalMessage(responseMessage);
+            return Result<bool>.Failure(GroupErrors.UpdateGroupError);
+        }
 
         public async Task<Result> DeleteAsync(string id, CancellationToken cancellationToken)
         {

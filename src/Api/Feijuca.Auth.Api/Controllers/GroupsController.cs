@@ -1,5 +1,6 @@
 ﻿using Feijuca.Auth.Application.Commands.Group;
 using Feijuca.Auth.Application.Queries.Groups;
+using Feijuca.Auth.Application.Requests.Group;
 using Feijuca.Auth.Application.Requests.User;
 using Feijuca.Auth.Attributes;
 using LiteBus.Commands.Abstractions;
@@ -91,6 +92,34 @@ public class GroupsController(ICommandMediator commandMediator, IQueryMediator q
         {
             var response = Result<string>.Success("Group created successfully");
             return Created("/createGroup", response);
+        }
+
+        var responseError = Result<string>.Failure(result.Error);
+        return BadRequest(responseError);
+    }
+
+    /// <summary>
+    /// Put an existing group from the specified Keycloak realm.
+    /// </summary>
+    /// <returns>
+    /// A 200 Ok status code;
+    /// otherwise, a 400 Bad Request status code with an error message, or a 500 Internal Server Error status code if something goes wrong.
+    /// </returns>
+    /// <param name="id">An object of type <see cref="T:System.Guid"/> containing identifier of the group to be updated.</param>
+    /// <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> used to observe cancellation requests for the operation.</param>
+    /// <param name="request">An object of type <see cref="T:Feijuca.Auth.Common.Models.UpdateGroupRequest"/> containing the details of the group to be updated.</param>
+    [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [RequiredRole("Feijuca.ApiWriter")]
+    public async Task<IActionResult> UpdateGroup([FromRoute] Guid id, [FromBody] UpdateGroupRequest request, CancellationToken cancellationToken)
+    {
+        var result = await commandMediator.SendAsync(new UpdateGroupCommand(id, request), cancellationToken);
+
+        if (result.IsSuccess)
+        {
+            return Ok();
         }
 
         var responseError = Result<string>.Failure(result.Error);
