@@ -99,7 +99,7 @@ public class GroupsController(ICommandMediator commandMediator, IQueryMediator q
     }
 
     /// <summary>
-    /// Put an existing group from the specified Keycloak realm.
+    /// Update the name of an existing group from the specified Keycloak realm.
     /// </summary>
     /// <returns>
     /// A 200 Ok status code;
@@ -108,14 +108,14 @@ public class GroupsController(ICommandMediator commandMediator, IQueryMediator q
     /// <param name="id">An object of type <see cref="T:System.Guid"/> containing identifier of the group to be updated.</param>
     /// <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> used to observe cancellation requests for the operation.</param>
     /// <param name="request">An object of type <see cref="T:Feijuca.Auth.Common.Models.UpdateGroupRequest"/> containing the details of the group to be updated.</param>
-    [HttpPut("{id}")]
+    [HttpPatch("{id}/update-group-name")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [RequiredRole("Feijuca.ApiWriter")]
-    public async Task<IActionResult> UpdateGroup([FromRoute] Guid id, [FromBody] UpdateGroupRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateGroupName([FromRoute] Guid id, [FromBody] UpdateGroupNameRequest request, CancellationToken cancellationToken)
     {
-        var result = await commandMediator.SendAsync(new UpdateGroupCommand(id, request), cancellationToken);
+        var result = await commandMediator.SendAsync(new UpdateGroupNameCommand(id, request), cancellationToken);
 
         if (result.IsSuccess)
         {

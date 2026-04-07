@@ -1,4 +1,4 @@
 ﻿namespace Feijuca.Auth.Application.Requests.Group
 {
-    public record UpdateGroupRequest(string Name);
+    public record UpdateGroupNameRequest(string Name);
 }

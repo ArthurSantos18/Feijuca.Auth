@@ -6,9 +6,9 @@ using Mattioli.Configurations.Models;
 
 namespace Feijuca.Auth.Application.Commands.Group
 {
-    public class UpdateGroupCommandHandler(IGroupRepository _groupRepository, ITenantProvider tenantProvider) : ICommandHandler<UpdateGroupCommand, Result<bool>>
+    public class UpdateGroupNameCommandHandler(IGroupRepository _groupRepository, ITenantProvider tenantProvider) : ICommandHandler<UpdateGroupNameCommand, Result<bool>>
     {
-        public async Task<Result<bool>> HandleAsync(UpdateGroupCommand request, CancellationToken cancellationToken = default)
+        public async Task<Result<bool>> HandleAsync(UpdateGroupNameCommand request, CancellationToken cancellationToken = default)
         {
             var groups = await _groupRepository.GetAllAsync(tenantProvider.Tenant.Name, cancellationToken);
 
