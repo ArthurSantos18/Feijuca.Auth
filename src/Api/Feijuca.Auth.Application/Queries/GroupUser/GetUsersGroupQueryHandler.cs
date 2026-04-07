@@ -16,9 +16,9 @@ namespace Feijuca.Auth.Application.Queries.GroupUser
         private readonly IUserRepository _userRepository = userRepository;
         private readonly ITenantProvider _tenantProvider = tenantService;
 
-        public async Task<Result<PagedResult<UserGroupResponse>>> HandleAsync(GetUsersGroupQuery request, CancellationToken cancellationToken)
+        public async Task<Result<PagedResult<UserGroupResponse>>> HandleAsync(GetUsersGroupQuery request, CancellationToken cancellationToken = default)
         {
-            var allGroupsResult = await _groupRepository.GetAllAsync(_tenantProvider.Tenant.Name, cancellationToken);
+            var allGroupsResult = await _groupRepository.GetAllAsync(cancellationToken);
 
             if (allGroupsResult.IsSuccess)
             {

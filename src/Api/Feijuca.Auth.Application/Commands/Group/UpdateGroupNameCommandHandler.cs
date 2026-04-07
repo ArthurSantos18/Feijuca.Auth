@@ -1,16 +1,15 @@
 ﻿using Feijuca.Auth.Common.Errors;
 using Feijuca.Auth.Domain.Interfaces;
-using Feijuca.Auth.Providers;
 using LiteBus.Commands.Abstractions;
 using Mattioli.Configurations.Models;
 
 namespace Feijuca.Auth.Application.Commands.Group
 {
-    public class UpdateGroupNameCommandHandler(IGroupRepository _groupRepository, ITenantProvider tenantProvider) : ICommandHandler<UpdateGroupNameCommand, Result<bool>>
+    public class UpdateGroupNameCommandHandler(IGroupRepository _groupRepository) : ICommandHandler<UpdateGroupNameCommand, Result<bool>>
     {
         public async Task<Result<bool>> HandleAsync(UpdateGroupNameCommand request, CancellationToken cancellationToken = default)
         {
-            var groups = await _groupRepository.GetAllAsync(tenantProvider.Tenant.Name, cancellationToken);
+            var groups = await _groupRepository.GetAllAsync(cancellationToken);
 
             if (groups.IsFailure)
             {
@@ -26,7 +25,7 @@ namespace Feijuca.Auth.Application.Commands.Group
 
             group.Name = request.Request.Name;
 
-            var result = await _groupRepository.UpdateAsync(group, tenantProvider.Tenant.Name, cancellationToken);
+            var result = await _groupRepository.UpdateAsync(group, cancellationToken);
 
             if (result.IsSuccess)
             {
