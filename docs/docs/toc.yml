@@ -31,6 +31,8 @@
           href: deletingUsers.md
         - name: Update Attributes
           href: updateAttributes.md
+        - name: Update Password
+          href: updatePassword.md
         - name: Revoke sessions
           href: revokeUserSessions.md
         - name: Logout user
@@ -80,3 +82,5 @@
       items:
         - name: Getting clients
           href: gettingClient.md
+        - name: Creating client
+          href: creatingClient.md

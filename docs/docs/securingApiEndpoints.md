@@ -29,7 +29,7 @@ Here's what Feijuca checks:
 
 1. **Token Presence**: It ensures that a token is included in the request.
 2. **Token Expiration**: It checks if the token is still valid and not expired.
-3. **Realm Matching**: It verifies whether the realm in the token matches one of the configured realms in your `appsettings.json`.
+3. **Realm Matching**: It verifies whether the realm in the token matches one of the existing realms in your Keycloak.
 4. **Issuer Verification**: It confirms that the token's issuer matches the expected `Issuer` configured for that realm.
 
 > ✅ If everything is correctly configured, you don’t need to worry — Feijuca will handle these checks automatically.
@@ -67,7 +67,7 @@ You can create roles directly in **Keycloak** or use the **Feijuca.Auth REST API
 Assign the role to a **user** or a **group** within Keycloak.
 
 ##### 3. Feijuca Will Do the Rest  
-Feijuca will automatically check if the user has the required role when accessing endpoints decorated with:
+Feijuca will automatically check if the user has the required role when accessing endpoints decorated with: `[RequiredRole("...")]`
 
 
 
