@@ -11,6 +11,11 @@ namespace Feijuca.Auth.Common.Errors
             $"An error occurred while trying creating the group: {TechnicalMessage}"
         );
 
+        public static Error UpdateGroupError => new(
+            "Group.UpdateGroupError",
+            $"An error occurred while trying updating the group: {TechnicalMessage}"
+        );
+
         public static Error DeletionGroupError => new(
             "Group.DeletionGroupError",
             $"An error occurred while trying delete the group: {TechnicalMessage}"
@@ -19,6 +24,11 @@ namespace Feijuca.Auth.Common.Errors
         public static Error GetGroupsError => new(
             "Group.GetGroupsError",
             $"An error occurred while trying get the groups: {TechnicalMessage}"
+        );
+
+        public static Error NotFoundError => new(
+            "Group.NotFoundError",
+            $"Group not found for provided identifier."
         );
 
         public static Error GetUsersInGroupsError => new(
