@@ -43,6 +43,17 @@
           href: decodeToken.md
         - name: Refresh token
           href: refreshToken.md
+    - name: Handling User Attributes
+      href: gettingUserAttributes.md
+      items:
+        - name: Getting user attributes
+          href: gettingUserAttributes.md
+        - name: Creating user attributes
+          href: creatingUserAttributes.md
+        - name: Updating user attributes
+          href: updatingUserAttributes.md
+        - name: Deleting user attributes
+          href: deletingUserAttributes.md
     - name: Handling Groups
       href: gettingGroup.md
       items:
@@ -52,6 +63,8 @@
           href: creatingGroup.md
         - name: Deleting group
           href: deleteGroup.md
+        - name: Update Group Name
+          href: updateGroupName.md
     - name: Handling Roles
       href: gettingRoles.md
       items:
@@ -84,3 +97,28 @@
           href: gettingClient.md
         - name: Creating client
           href: creatingClient.md
+    - name: Handling Client Scopes
+      href: gettingClientScopes.md
+      items:
+        - name: Getting client scopes
+          href: gettingClientScopes.md
+        - name: Creating client scope
+          href: creatingClientScope.md
+        - name: Assigning scope to a client
+          href: assigningScopeToClient.md
+    - name: Handling Realms
+      href: creatingRealm.md
+      items:
+        - name: Creating realm
+          href: creatingRealm.md
+        - name: Enabling realm
+          href: enablingRealm.md
+        - name: Replicate realm
+          href: replicatingRealm.md
+    - name: Handling Initial Configuration
+      href: creatingConfigForExistingRealm.md
+      items:
+        - name: Creating config for an existing realm
+          href: creatingConfigForExistingRealm.md
+        - name: Creating config for a new realm
+          href: creatingConfigForNewRealm.md

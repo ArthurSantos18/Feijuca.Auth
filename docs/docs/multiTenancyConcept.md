@@ -19,13 +19,13 @@ Setting this up in **Feijuca.Auth** is very simple and you don't need any extra 
 >💡This endpoint requires that you're authenticated and have the `Feijuca.ApiWriter` role to create a new realm.
 
 ```curl
-curl --location 'https://your-feijuca-url/api/v1/realms' \
---header 'Content-Type: application/json' \
---header 'Authorization: Bearer ...' \
---data '{
-  "name": "sample-realm",
-  "description": "just a sample realm..."
-}'
+    curl --location 'https://your-feijuca-url/api/v1/realms' \
+    --header 'Content-Type: application/json' \
+    --header 'Authorization: Bearer ...' \
+    --data '{
+    "name": "sample-realm",
+    "description": "just a sample realm..."
+    }'
 ```
 
 Your API is allways prepared to receive tokens from one or more **realms** at any time.

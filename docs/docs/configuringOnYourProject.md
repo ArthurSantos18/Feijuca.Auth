@@ -20,8 +20,8 @@ Here’s a minimal configuration example:
 
 ```json
   "FeijucaAuthConfiguration": {
-		"KeycloakUrl": "https://keycloak-production.ul0sru.easypanel.host",
-		"ApiUrl": "https://apis-feijuca-production.ul0sru.easypanel.host"
+	"KeycloakUrl": "https://keycloak-production.ul0sru.easypanel.host",
+	"ApiUrl": "https://apis-feijuca-production.ul0sru.easypanel.host"
   }
 ```
 
