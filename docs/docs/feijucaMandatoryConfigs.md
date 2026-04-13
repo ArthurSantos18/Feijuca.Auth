@@ -37,13 +37,13 @@ Use the following command to start the API:
 
 ```bash
 docker run \
-  -e ConnectionString="mongodb://<username>:<password>@<host>:<port>" \
-  -e DatabaseName="FeijucaAuth" \
-  coderaw/feijuca-auth-api:latest
+  -e Feijuca_ConnectionString="mongodb://<username>:<password>@<host>:<port>" \
+  -e Feijuca_DatabaseName="FeijucaAuth" \
+  fmattioli/feijuca-auth-api:latest
 ```
 
-> **ConnectionString**: The `ConnectionString` variable defines how to connect to your MongoDB instance.  
-> **DatabaseName**: The `DatabaseName` variable specifies which database inside your MongoDB server will be used to store client credentials configured previosly.
+> **Feijuca_ConnectionString**: The `ConnectionString` variable defines how to connect to your MongoDB instance.  
+> **Feijuca_DatabaseName**: The `DatabaseName` variable specifies which database inside your MongoDB server will be used to store client credentials configured previosly.
 
 ---
 
@@ -72,7 +72,7 @@ curl https://localhost:7018/api/v1/configs/new-realm \
   --header 'Content-Type: application/json' \
   --data '{
   "realmAdminUser": {
-    "email": "", --Feel free to inform a new user and password
+    "username": "", --Feel free to inform a new user and password
     "password": ""
   },
   "client": {
@@ -86,7 +86,7 @@ curl https://localhost:7018/api/v1/configs/new-realm \
   },
   "realm": {
     "name": -- Choose a new realm name or set an existing one,
-	"issuer": "serverSettings-url/realmname"
+    "issuer": "serverSettings-url/realmname"
   }
 }'
 

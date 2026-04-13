@@ -2,11 +2,11 @@
 
 ##### Method: POST
 
-##### Path: /clients-roles
+##### Path: /clients
 
 ##### Summary:
 
-Adds a new role to the client in the specified Keycloak realm.
+Adds a new client in the specified Keycloak realm.
 
 ##### Responses
 
@@ -18,30 +18,21 @@ Adds a new role to the client in the specified Keycloak realm.
 | 403  | The request was understood, but the server is refusing to fulfill it due to insufficient permissions. |
 | 500  | An internal server error occurred during the processing of the request.                               |
 
-##### Header
-
-| Name   | Located in | Description                                                                        | Required | Schema |
-| ------ | ---------- | ---------------------------------------------------------------------------------- | -------- | ------ |
-| Tenant | header     | The tenant identifier used to filter the clients within a specific Keycloak realm. | Yes      | string |
 
 ##### Body definition
 
 | Name        | Located in | Description                                                                                    | Required | Schema |
 | ----------- | ---------- | ---------------------------------------------------------------------------------------------- | -------- | ------ |
-| clientId    | body       | The clientId related to the unique identifier of the client that will have the new rule added. | Yes      | Guid   |
-| name        | body       | The name is related to the rule name.                                                          | Yes      | string |
-| description | body       | The description is related to information for that rule.                                       | Yes      | string |
-
-##### Definition
-
-![Endpoint definition](https://res.cloudinary.com/dd7cforjd/image/upload/xdcrpq1fi3pbx3i2aq1u.jpg "Endpoint definition")
+| clientId    | body       | The clientId related to the unique identifier of the client and normaly its a name. | Yes      | string   |
+| description | body       | The description is related to information for that client.                                       | Yes      | string |
+| urls | body       | The urls are related to information for that client.                                       | Yes      | strings array |
 
 ### 📝 How to Use the Endpoint
 
 1. **Tenant Identification**:
 
    - The term _tenant_ in Feijuca represents the **realm name** within Keycloak where you’ll be performing actions.
-   - You must specify the tenant name in the **HTTP header** to proceed.
+   - You dont need to specify the tenant itself, feijuca knows your tenant by extracting it from your JWT Access Token that you pass in `Authorization` header.
 
 2. **Body**:
 
@@ -49,8 +40,10 @@ Adds a new role to the client in the specified Keycloak realm.
 
    ```json
    {
-     "clientId": "Unique identifier of your customer(Guid)",
-     "name": "test",
-     "description": "description test"
+     "clientId": "name-of-your-client",
+     "description": "description of your client",
+     "urls": [
+        "https://your-feijuca-url"
+     ]
    }
    ```

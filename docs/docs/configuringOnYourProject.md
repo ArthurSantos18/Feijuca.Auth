@@ -14,22 +14,19 @@ This package contains all the necessary components to enable Keycloak-based auth
 
 ### ⚙️ Step 2: Configure the `appsettings.json`
 
-After installing the package, it's time to configure your `appsettings.json` file.  
-You need to define an array of realms that your application will support.
-
-> 💡 This allows **Feijuca.Auth** to support multi-tenant scenarios.  
-> For now, we’ll configure a **single-tenant** example.
+After installing the package, it's time to configure your `appsettings.json` file.
 
 Here’s a minimal configuration example:
 
 ```json
-  "FeijucaApiSettings": {
-    "Url": "https://apis-feijuca-production.ul0sru.easypanel.host"
+  "FeijucaAuthConfiguration": {
+	"KeycloakUrl": "https://keycloak-production.ul0sru.easypanel.host",
+	"ApiUrl": "https://apis-feijuca-production.ul0sru.easypanel.host"
   }
-]
 ```
 
-- **Url**: The URL where Feijuca.Auth.Api is running.
+- **KeycloakUrl**: The URL where Keycloak is running.
+- **ApiUrl**: The URL where Feijuca.Auth.Api is running.
 
 This section is required and will be passed to **Feijuca** when initializing the authentication layer.
 
@@ -45,23 +42,21 @@ Inside your `Program.cs`, configure and the HttpClient regarding to the Feijuca.
 ```csharp
 services.AddHttpClient<IFeijucaAuthClient, FeijucaAuthClient>(client =>
 {
-	client.DefaultRequestHeaders.Add("Tenant", "smartconsig");
-	client.BaseAddress = new Uri(settings.FeijucaAuthConfiguration.Url); // Get the URL from your appsettings.json
+	client.BaseAddress = new Uri(settings.FeijucaAuthConfiguration.ApiUrl); // Get the URL from your appsettings.json
 })
 ```
 
 After, register the authentication services by calling the following extension method:
 
 ```csharp
-builder.Services.AddApiAuthentication();
+builder.Services.AddApiAuthentication(settings.FeijucaAuthConfiguration)
 ```
 
 This method will:
 
 - Automatically register all necessary **JWT authentication** and **authorization** services.
-- Load your configured realms and validate tokens issued by them when it arrives to your api.
 
-> 💡 I recommend you create a class called Settings and map the appsettings.json on this class, you can merge your personal appsettings config and also add the Realm array that is required for Feijuca. For example:
+> 💡 I recommend you create a class called Settings and map the appsettings.json on this class, you can merge your personal appsettings config.
 
 ---
 

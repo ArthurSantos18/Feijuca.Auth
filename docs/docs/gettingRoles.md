@@ -2,7 +2,7 @@
 
 ##### Method: GET
 
-##### Path: /roles
+##### Path: /clients-roles
 
 ##### Summary:
 

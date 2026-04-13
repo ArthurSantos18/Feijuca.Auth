@@ -2,7 +2,7 @@
 
 We've arrived at what is possibly the most powerful feature of **Feijuca.Auth**: the **Multi-Tenancy Concept**.
 
-As you’ve seen earlier, when configuring your API, you can pass an array of realms. Each **realm** essentially represents a **tenant**.
+Each **realm** essentially represents a **tenant**.
 
 For example:
 
@@ -14,26 +14,21 @@ This gives each tenant full control over its authentication and authorization co
 
 ### ⚙️ How to Configure Multi-Tenancy
 
-Setting this up in **Feijuca.Auth** is very simple. Just add multiple realms to your `appsettings.json`. Here’s what it looks like:
+Setting this up in **Feijuca.Auth** is very simple and you don't need any extra configuration for it; **Feijuca's** middlewares already take care of it for you. Just create more realms using the `POST /api/v1/realms` endpoint that Feijuca.Auth.Api provides with the `name` and `description` for your new realm.
 
-```json
-{
-  "Settings": {
-    "Realms": [
-      {
-        "Name": "10444",
-        "Issuer": "https://keycloak.ul0sru.host/realms/10444"
-      },
-      {
-        "Name": "10445",
-        "Issuer": "https://keycloak.ul0sru.host/realms/10445"
-      }
-    ]
-  }
-}
+>💡This endpoint requires that you're authenticated and have the `Feijuca.ApiWriter` role to create a new realm.
+
+```curl
+    curl --location 'https://your-feijuca-url/api/v1/realms' \
+    --header 'Content-Type: application/json' \
+    --header 'Authorization: Bearer ...' \
+    --data '{
+    "name": "sample-realm",
+    "description": "just a sample realm..."
+    }'
 ```
 
-With this configuration, your API will now accept tokens issued from **both** realms.
+Your API is allways prepared to receive tokens from one or more **realms** at any time.
 
 
 
@@ -49,7 +44,7 @@ app.UseTenantMiddleware();
 ### 🧩 Tenant Propagation Inside Your API
 
 When using this middleware, the tenant information is propagated along with the user related to the token.  
-You can access this data via the `ITenantService` interface, which provides the following methods:
+You can access this data via the `ITenantProvider` interface, which provides the following methods:
 
 ```csharp
 string GetInfo(string infoName);
@@ -70,21 +65,21 @@ Since the tenant context is propagated on every request, you’re free to use it
 
 ### ✅ Tenant and User Access in Endpoints
 
-With the tenant middleware enabled and the `ITenantService` injected, you can now access both the tenant and user information inside your endpoints. This is particularly useful for logging, filtering data, or applying business rules per tenant or user context.
+With the tenant middleware enabled and the `ITenantProvider` injected, you can now access both the tenant and user information inside your endpoints. This is particularly useful for logging, filtering data, or applying business rules per tenant or user context.
 
 Here’s a practical example of how to retrieve tenant and user information from the current request:
 
 ```csharp
 [ApiController]
 [Route("[controller]")]
-public class FeijucaExampleController(ITenantService tenantService) : ControllerBase
+public class FeijucaExampleController(ITenantProvider tenantProvider) : ControllerBase
 {
     [HttpGet("token-validation")]
     [Authorize]
     public ActionResult<string> SimpleAuthentication()
     {
-        var tenant = tenantService.GetTenant();
-        var user = tenantService.GetUser();
+        var tenant = tenantProvider.GetTenant();
+        var user = tenantProvider.GetUser();
 
         return Ok($"Hello from Feijuca! 🎉 You are authenticated. Tenant (Realm): {tenant.Name}, Username: {user.Username}, UserID: {user.Id}");
     }
@@ -94,8 +89,8 @@ public class FeijucaExampleController(ITenantService tenantService) : Controller
     [RequiredRole("RoleName")]
     public ActionResult<string> RoleAuthentication()
     {
-        var tenant = tenantService.GetTenant();
-        var user = tenantService.GetUser();
+        var tenant = tenantProvider.GetTenant();
+        var user = tenantProvider.GetUser();
 
         return Ok($"Hello from Feijuca! 🎉 You are authenticated with a valid role. Tenant (Realm): {tenant.Name} Username: {user.Username}, UserID: {user.Id}");
     }
