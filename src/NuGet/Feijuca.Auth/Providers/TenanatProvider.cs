@@ -36,8 +36,8 @@ public class TenanatProvider(IHttpContextAccessor httpContextAccessor, JwtSecuri
         if (!string.IsNullOrEmpty(jwtToken))
         {
             var tokenInfos = jwtSecurityTokenHandler.ReadJwtToken(jwtToken);
-            var userClaim = tokenInfos.Claims.Where(c => c.Type == infoName).Select(c => c.Value);
-            return userClaim;
+            var userClaims = tokenInfos.Claims.Where(c => c.Type == infoName).Select(c => c.Value);
+            return userClaims;
         }
 
         return Enumerable.Empty<string>();

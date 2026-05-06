@@ -15,8 +15,9 @@ namespace Feijuca.Auth.Api.Tests.Controllers
         {
             var tenant = tenantService.GetTenant();
             var user = tenantService.GetUser();
+            var groups = tenantService.GetGroups("groups");
 
-            return Ok($"Hello from Feijuca! 🎉 You are authenticated. Tenant (Realm): {tenant.Name}, Username: {user.Username}, UserID: {user.Id}");
+            return Ok($"Hello from Feijuca! 🎉 You are authenticated. Tenant (Realm): {tenant.Name}, Username: {user.Username}, UserID: {user.Id}, Groups: {string.Join(", ", groups)}");
         }
 
         [HttpGet("role-validation")]
@@ -26,8 +27,9 @@ namespace Feijuca.Auth.Api.Tests.Controllers
         {
             var tenant = tenantService.GetTenant();
             var user = tenantService.GetUser();
+            var groups = tenantService.GetGroups("groups");
 
-            return Ok($"Hello from Feijuca! 🎉 You are authenticated with a valid role. Tenant (Realm): {tenant.Name} Username: {user.Username}, UserID: {user.Id}");
+            return Ok($"Hello from Feijuca! 🎉 You are authenticated with a valid role. Tenant (Realm): {tenant.Name} Username: {user.Username}, UserID: {user.Id}, Groups: {string.Join(", ", groups)}");
         }
     }
 }
