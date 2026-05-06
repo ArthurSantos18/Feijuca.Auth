@@ -30,6 +30,7 @@ public class TenantProvider(IHttpContextAccessor httpContextAccessor, JwtSecurit
 
         return string.Empty;
     }
+
     public IEnumerable<string> GetGroupNames()
     {
         string jwtToken = GetToken();
