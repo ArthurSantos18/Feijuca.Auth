@@ -90,19 +90,38 @@ public static class TenantAuthExtensions
         {
             try
             {
-                var tokenJwt =
-                    context.Request.Headers.Authorization.FirstOrDefault()
-                    ?? context.Request.Query["access_token"].FirstOrDefault();
+                var rawAuthorization = context.Request.Headers.Authorization.FirstOrDefault();
+                var rawQueryToken = context.Request.Query["access_token"].FirstOrDefault();
 
-                if (string.IsNullOrWhiteSpace(tokenJwt))
+                string? token = null;
+
+                if (!string.IsNullOrWhiteSpace(rawAuthorization))
+                {
+                    const string bearerPrefix = "Bearer ";
+
+                    if (!rawAuthorization.StartsWith(bearerPrefix, StringComparison.OrdinalIgnoreCase))
+                    {
+                        context.Fail("Invalid authorization scheme");
+                        return Task.CompletedTask;
+                    }
+
+                    token = rawAuthorization[bearerPrefix.Length..].Trim();
+                }
+                else if (!string.IsNullOrWhiteSpace(rawQueryToken))
+                {
+                    token = rawQueryToken.Trim();
+                }
+
+                if (string.IsNullOrWhiteSpace(token))
                 {
                     context.Fail("Missing token");
                     return Task.CompletedTask;
                 }
 
-                var token = tokenJwt.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase).Trim();
+                context.Token = token;
 
                 var handler = new JwtSecurityTokenHandler();
+
                 if (!handler.CanReadToken(token))
                 {
                     context.Fail("Invalid token format");
@@ -120,7 +139,8 @@ public static class TenantAuthExtensions
 
                 var metadataAddress = issuer.TrimEnd('/') + "/.well-known/openid-configuration";
 
-                var cache = context.HttpContext.RequestServices.GetRequiredService<IOidcConfigManagerCache>();
+                var cache = context.HttpContext.RequestServices
+                    .GetRequiredService<IOidcConfigManagerCache>();
 
                 context.Options.MetadataAddress = metadataAddress;
                 context.Options.ConfigurationManager =
@@ -132,6 +152,7 @@ public static class TenantAuthExtensions
             {
                 context.HttpContext.Items["AuthError"] = $"Authentication setup failed: {ex.Message}";
                 context.HttpContext.Items["AuthStatusCode"] = 401;
+
                 context.Fail($"Authentication setup failed: {ex.Message}");
                 return Task.CompletedTask;
             }

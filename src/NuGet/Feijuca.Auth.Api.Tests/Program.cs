@@ -9,12 +9,12 @@ var settings = builder.Configuration.GetSection("Settings").Get<Settings>()!;
 
 builder.Services.AddHttpClient<IFeijucaAuthClient, FeijucaAuthClient>(client =>
 {
-    client.BaseAddress = new Uri(settings.Feijuca.ApiUrl);
+    client.BaseAddress = new Uri(settings.FeijucaAuthConfiguration.ApiUrl);
 });
 
 builder.Services.AddControllers();
 builder.Services
-    .AddApiAuthentication(settings.Feijuca)
+    .AddApiAuthentication(settings.FeijucaAuthConfiguration)
     .AddEndpointsApiExplorer()
     .AddOpenApi("v1");
 
