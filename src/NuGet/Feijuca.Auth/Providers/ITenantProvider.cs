@@ -11,8 +11,8 @@ public interface ITenantProvider
     User User { get; }
 
     string GetInfo(string infoName);
-
-    IEnumerable<Tenant> GetTenants();
+    IEnumerable<string> GetGroups(string infoName);
+    IEnumerable <Tenant> GetTenants();
 
     Tenant GetTenant();
 

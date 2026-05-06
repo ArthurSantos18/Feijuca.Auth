@@ -30,6 +30,18 @@ public class TenanatProvider(IHttpContextAccessor httpContextAccessor, JwtSecuri
 
         return string.Empty;
     }
+    public IEnumerable<string> GetGroups(string infoName)
+    {
+        string jwtToken = GetToken();
+        if (!string.IsNullOrEmpty(jwtToken))
+        {
+            var tokenInfos = jwtSecurityTokenHandler.ReadJwtToken(jwtToken);
+            var userClaim = tokenInfos.Claims.Where(c => c.Type == infoName).Select(c => c.Value);
+            return userClaim;
+        }
+
+        return Enumerable.Empty<string>();
+    }
 
     public User GetUser()
     {
