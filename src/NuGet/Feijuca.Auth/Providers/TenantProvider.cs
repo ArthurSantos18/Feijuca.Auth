@@ -4,7 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace Feijuca.Auth.Providers;
 
-public class TenanatProvider(IHttpContextAccessor httpContextAccessor, JwtSecurityTokenHandler jwtSecurityTokenHandler) : ITenantProvider
+public class TenantProvider(IHttpContextAccessor httpContextAccessor, JwtSecurityTokenHandler jwtSecurityTokenHandler) : ITenantProvider
 {
     private User _userId = null!;
 
@@ -30,7 +30,7 @@ public class TenanatProvider(IHttpContextAccessor httpContextAccessor, JwtSecuri
 
         return string.Empty;
     }
-    public IEnumerable<string> GetGroups()
+    public IEnumerable<string> GetGroupNames()
     {
         string jwtToken = GetToken();
 
