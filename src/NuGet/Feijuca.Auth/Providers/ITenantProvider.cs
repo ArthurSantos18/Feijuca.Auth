@@ -12,7 +12,7 @@ public interface ITenantProvider
 
     string GetInfo(string infoName);
     IEnumerable<string> GetGroups(string infoName);
-    IEnumerable <Tenant> GetTenants();
+    IEnumerable<Tenant> GetTenants();
 
     Tenant GetTenant();
 
