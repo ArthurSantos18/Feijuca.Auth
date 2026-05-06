@@ -29,7 +29,7 @@ public static class TenantAuthExtensions
         services
             .AddSingleton<IOidcConfigManagerCache, OidcConfigManagerCache>()
             .AddSingleton<JwtSecurityTokenHandler>()
-            .AddScoped<ITenantProvider, TenanatProvider>()
+            .AddScoped<ITenantProvider, TenantProvider>()
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddKeycloakWebApi(
                 options =>
