@@ -74,7 +74,7 @@ namespace Feijuca.Auth.Http.Client
         {
             var result = await GetAsync<PagedResult<UserGroupResponse>>($"groups/users?groupId={groupId}", jwtToken, cancellationToken);
 
-            if (result.TotalResults < 1)
+            if (!result.Results.Any())
             {
                 return Result<PagedResult<UserGroupResponse>>.Failure(FeijucaErrors.GetGroupUsersErrors);
             }
