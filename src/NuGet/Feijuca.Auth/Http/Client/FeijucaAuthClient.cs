@@ -70,6 +70,18 @@ namespace Feijuca.Auth.Http.Client
             return Result<IEnumerable<GroupResponse>>.Success(result);
         }
 
+        public async Task<Result<PagedResult<UserGroupResponse>>> GetGroupUsersAsync(string groupId, string jwtToken, CancellationToken cancellationToken)
+        {
+            var result = await GetAsync<PagedResult<UserGroupResponse>>($"groups/users?groupId={groupId}", jwtToken, cancellationToken);
+
+            if (result.TotalResults < 1)
+            {
+                return Result<PagedResult<UserGroupResponse>>.Failure(FeijucaErrors.GetGroupUsersErrors);
+            }
+
+            return Result<PagedResult<UserGroupResponse>>.Success(result);
+        }
+
         public async Task<Result<IEnumerable<RealmResponse>>> GetRealmsAsync(string jwtToken, CancellationToken cancellationToken)
         {
             var result = await GetAsync<IEnumerable<RealmResponse>>("realms", jwtToken, cancellationToken);
