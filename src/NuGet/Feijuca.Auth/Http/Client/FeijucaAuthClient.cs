@@ -72,7 +72,7 @@ namespace Feijuca.Auth.Http.Client
 
         public async Task<Result<PagedResult<UserGroupResponse>>> GetGroupUsersAsync(string groupId, string jwtToken, CancellationToken cancellationToken)
         {
-            var result = await GetAsync<PagedResult<UserGroupResponse>>($"groups/users?GroupId={groupId}", jwtToken, cancellationToken);
+            var result = await GetAsync<PagedResult<UserGroupResponse>>($"groups/users?groupId={groupId}", jwtToken, cancellationToken);
 
             if (result.TotalResults < 1)
             {
