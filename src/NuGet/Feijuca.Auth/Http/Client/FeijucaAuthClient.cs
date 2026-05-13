@@ -115,5 +115,35 @@ namespace Feijuca.Auth.Http.Client
 
             return Result.Success();
         }
+
+        public async Task<Result<Guid>> CreateUserAsync(CreateUserRequest request, string tenant, CancellationToken cancellationToken)
+        {
+            IncludeTenantHeader(tenant);
+
+            var userId = await PostAsync<CreateUserRequest, Guid>("users", request, cancellationToken);
+
+            return Result<Guid>.Success(userId);
+        }
+
+        public async Task<Result<IEnumerable<RealmResponse>>> GetClientsRolesAsync(string jwtToken, CancellationToken cancellationToken)
+        {
+            var result = await GetAsync<IEnumerable<RealmResponse>>("clients-roles", jwtToken, cancellationToken);
+
+            return Result<IEnumerable<RealmResponse>>.Success(result);
+        }
+
+        public async Task<Result> AddRoleToGroup(string id, AddClientRoleToGroupRequest request, CancellationToken cancellationToken)
+        {
+            var result = await PostAsync<AddClientRoleToGroupRequest, bool>($"groups-roles/{id}/role", request, cancellationToken);
+
+            return Result.Success();
+        }
+
+        public async Task<Result> AddUserToGroup(AddUserToGroupRequest request, CancellationToken cancellationToken)
+        {
+            var result = await PostAsync<AddUserToGroupRequest, bool>($"groups/users", request, cancellationToken);
+
+            return Result.Success();
+        }
     }
 }
