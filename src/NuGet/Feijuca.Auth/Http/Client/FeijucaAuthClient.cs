@@ -106,5 +106,14 @@ namespace Feijuca.Auth.Http.Client
                 _httpClient.DefaultRequestHeaders.Add("Tenant", tenant);
             }
         }
+
+        public async Task<Result> CreateGroupAsync(CreateGroupRequest request, string tenant, CancellationToken cancellationToken)
+        {
+            IncludeTenantHeader(tenant);
+
+            await PostAsync<CreateGroupRequest, bool>("groups", request, cancellationToken);
+
+            return Result.Success();
+        }
     }
 }
