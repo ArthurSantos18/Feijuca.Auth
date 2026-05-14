@@ -39,8 +39,7 @@ namespace Feijuca.Auth.Api.Controllers
                 return NoContent();
             }
 
-            var responseError = Result<string>.Failure(result.Error);
-            return BadRequest(responseError);
+            return BadRequest(result.Error);
         }
 
         /// <summary>
