@@ -9,5 +9,8 @@ public static class FeijucaErrors
     public static readonly Error GetGroupUsersErrors = new("ErrorGetGroupUsers", "An error occured while tried get group users.");
     public static readonly Error GetRealmErrors = new("ErrorGetRealms", "An error occured while tried get realms.");
     public static readonly Error GenerateTokenError = new("GenerateTokenError", "An error occured while generate JWT Token.");
+    public static readonly Error CreateGroupError = new("CreateGroupError", "An error occured while create new group");
+    public static readonly Error CreateUserError = new("CreateUserError", "An error occured while create new group");
+    public static readonly Error AddUserToGroupError = new("AddUserToGroupError", "An error occured while to add user in group");
 }
 
