@@ -90,12 +90,10 @@ public class GroupsController(ICommandMediator commandMediator, IQueryMediator q
 
         if (result.IsSuccess)
         {
-            var response = Result<string>.Success("Group created successfully");
-            return Created("/createGroup", response);
+            return Created("/createGroup", result.Data);
         }
 
-        var responseError = Result<string>.Failure(result.Error);
-        return BadRequest(responseError);
+        return BadRequest(result.Error);
     }
 
     /// <summary>
