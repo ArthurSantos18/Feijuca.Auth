@@ -4,5 +4,5 @@ using LiteBus.Commands.Abstractions;
 
 namespace Feijuca.Auth.Application.Commands.Group
 {
-    public record AddGroupCommand(AddGroupRequest AddGroupRequest) : ICommand<Result<bool>>;
+    public record AddGroupCommand(AddGroupRequest AddGroupRequest) : ICommand<Result<string>>;
 }
