@@ -1,14 +1,23 @@
-﻿using Mattioli.Configurations.Http;
-using Mattioli.Configurations.Models;
-using Feijuca.Auth.Errors;
+﻿using Feijuca.Auth.Errors;
 using Feijuca.Auth.Http.Requests;
 using Feijuca.Auth.Http.Responses;
+using Mattioli.Configurations.Http;
+using Mattioli.Configurations.Models;
+using Newtonsoft.Json.Linq;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace Feijuca.Auth.Http.Client
 {
     public class FeijucaAuthClient(HttpClient httpClient) : BaseHttpClient(httpClient), IFeijucaAuthClient
     {
         private readonly HttpClient _httpClient = httpClient;
+        private readonly JsonSerializerOptions _serializer = new()
+        {
+            PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        };
 
         public async Task<Result<TokenDetailsResponse>> AuthenticateUserAsync(string tenant, string username, string password, CancellationToken cancellationToken)
         {
@@ -94,6 +103,64 @@ namespace Feijuca.Auth.Http.Client
             return Result<IEnumerable<RealmResponse>>.Success(result);
         }
 
+        public async Task<Result<string>> CreateGroupAsync(CreateGroupRequest request, string jwtToken, CancellationToken cancellationToken)
+        {
+            IncludeAuthorizationHeader(jwtToken);
+
+            var response = await _httpClient.PostAsJsonAsync("groups", request, cancellationToken);
+            var content = await response.Content.ReadAsStringAsync(cancellationToken);
+            
+            if (!response.IsSuccessStatusCode) 
+            {
+                var error = JsonSerializer.Deserialize<Error>(content, _serializer);
+                return Result<string>.Failure(error ?? FeijucaErrors.CreateGroupError); 
+            }
+
+            return Result<string>.Success(content ?? "");
+        }
+
+        public async Task<Result<Guid>> CreateUserAsync(CreateUserRequest request, string tenant, CancellationToken cancellationToken)
+        {
+            IncludeTenantHeader(tenant);
+
+            var response = await _httpClient.PostAsJsonAsync("users", request, cancellationToken);
+            var content = await response.Content.ReadAsStringAsync(cancellationToken);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = JsonSerializer.Deserialize<Error>(content, _serializer);
+                return Result<Guid>.Failure(error ?? FeijucaErrors.CreateUserError);
+            }
+
+            var result = JsonSerializer.Deserialize<Guid>(content, _serializer);
+
+            return Result<Guid>.Success(result);
+        }
+
+        public async Task<Result> AddUserToGroupAsync(AddUserToGroupRequest request, string jwtToken, CancellationToken cancellationToken)
+        {
+            IncludeAuthorizationHeader(jwtToken);
+
+            var response = await _httpClient.PostAsJsonAsync("groups/users", request, cancellationToken);
+            var content = await response.Content.ReadAsStringAsync(cancellationToken);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = JsonSerializer.Deserialize<Error>(content, _serializer);
+                return Result.Failure(error ?? FeijucaErrors.AddUserToGroupError);
+            }
+
+            return Result.Success();
+        }
+
+        private void IncludeAuthorizationHeader(string jwtToken)
+        {
+            if(!string.IsNullOrEmpty(jwtToken))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            }
+        }
+
         private void IncludeTenantHeader(string tenant)
         {
             if (!string.IsNullOrEmpty(tenant))
@@ -105,45 +172,6 @@ namespace Feijuca.Auth.Http.Client
 
                 _httpClient.DefaultRequestHeaders.Add("Tenant", tenant);
             }
-        }
-
-        public async Task<Result> CreateGroupAsync(CreateGroupRequest request, string tenant, CancellationToken cancellationToken)
-        {
-            IncludeTenantHeader(tenant);
-
-            await PostAsync<CreateGroupRequest, bool>("groups", request, cancellationToken);
-
-            return Result.Success();
-        }
-
-        public async Task<Result<Guid>> CreateUserAsync(CreateUserRequest request, string tenant, CancellationToken cancellationToken)
-        {
-            IncludeTenantHeader(tenant);
-
-            var userId = await PostAsync<CreateUserRequest, Guid>("users", request, cancellationToken);
-
-            return Result<Guid>.Success(userId);
-        }
-
-        public async Task<Result<IEnumerable<RealmResponse>>> GetClientsRolesAsync(string jwtToken, CancellationToken cancellationToken)
-        {
-            var result = await GetAsync<IEnumerable<RealmResponse>>("clients-roles", jwtToken, cancellationToken);
-
-            return Result<IEnumerable<RealmResponse>>.Success(result);
-        }
-
-        public async Task<Result> AddRoleToGroup(string id, AddClientRoleToGroupRequest request, CancellationToken cancellationToken)
-        {
-            var result = await PostAsync<AddClientRoleToGroupRequest, bool>($"groups-roles/{id}/role", request, cancellationToken);
-
-            return Result.Success();
-        }
-
-        public async Task<Result> AddUserToGroup(AddUserToGroupRequest request, CancellationToken cancellationToken)
-        {
-            var result = await PostAsync<AddUserToGroupRequest, bool>($"groups/users", request, cancellationToken);
-
-            return Result.Success();
         }
     }
 }

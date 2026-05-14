@@ -4,7 +4,11 @@ using System.Text;
 
 namespace Feijuca.Auth.Http.Requests
 {
-    internal class CreateUserRequest
-    {
-    }
+    public record CreateUserRequest(
+              string Username, 
+              string Password,
+              string Email,
+              string FirstName,
+              string LastName,
+              Dictionary<string, string[]> Attributes);
 }
