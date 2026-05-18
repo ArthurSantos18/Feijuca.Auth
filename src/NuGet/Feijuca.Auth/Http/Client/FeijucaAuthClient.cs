@@ -103,6 +103,14 @@ namespace Feijuca.Auth.Http.Client
             return Result<IEnumerable<RealmResponse>>.Success(result);
         }
 
+        /// <summary>
+        /// Creates a new group in the authentication service.
+        /// </summary>
+        /// <param name="request">Group creation data.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>
+        /// Returns the created group identifier wrapped in a result object.
+        /// </returns>
         public async Task<Result<string>> CreateGroupAsync(CreateGroupRequest request, CancellationToken cancellationToken)
         {
             var response = await _httpClient.PostAsJsonAsync("groups", request, cancellationToken);
@@ -117,6 +125,15 @@ namespace Feijuca.Auth.Http.Client
             return Result<string>.Success(content ?? "");
         }
 
+        /// <summary>
+        /// Creates a new user for the specified tenant.
+        /// </summary>
+        /// <param name="request">User creation data.</param>
+        /// <param name="tenant">Tenant identifier.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>
+        /// Returns the created user identifier wrapped in a result object.
+        /// </returns>
         public async Task<Result<Guid>> CreateUserAsync(CreateUserRequest request, string tenant, CancellationToken cancellationToken)
         {
             IncludeTenantHeader(tenant);
@@ -135,6 +152,14 @@ namespace Feijuca.Auth.Http.Client
             return Result<Guid>.Success(result);
         }
 
+        /// <summary>
+        /// Adds a user to a group in the authentication service.
+        /// </summary>
+        /// <param name="request">User and group association data.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>
+        /// Returns a success result when the user is successfully added to the group.
+        /// </returns>
         public async Task<Result> AddUserToGroupAsync(AddUserToGroupRequest request, CancellationToken cancellationToken)
         {
             var response = await _httpClient.PostAsJsonAsync("groups/users", request, cancellationToken);
@@ -149,6 +174,10 @@ namespace Feijuca.Auth.Http.Client
             return Result.Success();
         }
 
+        /// <summary>
+        /// Sets the bearer token used in authenticated requests.
+        /// </summary>
+        /// <param name="jwtToken">JWT bearer token.</param>
         public void SetToken(string jwtToken)
         {
             if(!string.IsNullOrEmpty(jwtToken))
