@@ -13,7 +13,8 @@ public interface IFeijucaAuthClient
     Task<Result<IEnumerable<GroupResponse>>> GetGroupsAsync(string tenant, string jwtToken, CancellationToken cancellationToken);
     Task<Result<PagedResult<UserGroupResponse>>> GetGroupUsersAsync(string groupId, string jwtToken, CancellationToken cancellationToken);
     Task<Result<IEnumerable<RealmResponse>>> GetRealmsAsync(string jwtToken, CancellationToken cancellationToken);
-    Task<Result<string>> CreateGroupAsync(CreateGroupRequest request, string jwtToken, CancellationToken cancellationToken);
+    Task<Result<string>> CreateGroupAsync(CreateGroupRequest request, CancellationToken cancellationToken);
     Task<Result<Guid>> CreateUserAsync(CreateUserRequest request, string tenant, CancellationToken cancellationToken);
-    Task<Result> AddUserToGroupAsync(AddUserToGroupRequest request, string jwtToken, CancellationToken cancellationToken);
+    Task<Result> AddUserToGroupAsync(AddUserToGroupRequest request, CancellationToken cancellationToken);
+    void SetToken(string token);
 }

@@ -103,10 +103,8 @@ namespace Feijuca.Auth.Http.Client
             return Result<IEnumerable<RealmResponse>>.Success(result);
         }
 
-        public async Task<Result<string>> CreateGroupAsync(CreateGroupRequest request, string jwtToken, CancellationToken cancellationToken)
+        public async Task<Result<string>> CreateGroupAsync(CreateGroupRequest request, CancellationToken cancellationToken)
         {
-            IncludeAuthorizationHeader(jwtToken);
-
             var response = await _httpClient.PostAsJsonAsync("groups", request, cancellationToken);
             var content = await response.Content.ReadAsStringAsync(cancellationToken);
             
@@ -137,10 +135,8 @@ namespace Feijuca.Auth.Http.Client
             return Result<Guid>.Success(result);
         }
 
-        public async Task<Result> AddUserToGroupAsync(AddUserToGroupRequest request, string jwtToken, CancellationToken cancellationToken)
+        public async Task<Result> AddUserToGroupAsync(AddUserToGroupRequest request, CancellationToken cancellationToken)
         {
-            IncludeAuthorizationHeader(jwtToken);
-
             var response = await _httpClient.PostAsJsonAsync("groups/users", request, cancellationToken);
             var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
@@ -153,7 +149,7 @@ namespace Feijuca.Auth.Http.Client
             return Result.Success();
         }
 
-        private void IncludeAuthorizationHeader(string jwtToken)
+        public void SetToken(string jwtToken)
         {
             if(!string.IsNullOrEmpty(jwtToken))
             {
